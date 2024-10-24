@@ -23,56 +23,99 @@ time_table_drop = "DROP TABLE IF EXISTS time"
 # CREATE TABLES
 
 staging_events_table_create= ("""
-                            CREATE TABLE "staging_events" (   
-    "artist" character varying(500),
-    "auth" character varying(15) , 
-    "first_name" character varying(50) , 
-    "gender" character varying(1) ,
-    "item_in_session" double precision ,
-    "last_name" character varying(50) ,
-    "length" character varying(50) ,
-    "level" character varying(50) ,
-    "location" character varying(500) ,
-    "method" character varying(500) ,
-    "page" character varying(500) ,
-    "registration" double precision ,
-    "session_id" double precision ,
-    "song" character varying(500) , 
-    "status" double precision , 
-    "ts" double precision , 
-    "user_agent" character varying(500) , 
-    user_id double precision
-);
+                            CREATE TABLE staging_events (
+                                staging_events_id  bigint identity(0,1) not null,
+                                artist character varying(500),
+                                auth character varying(15) , 
+                                first_name character varying(50) , 
+                                gender character varying(1) ,
+                                item_in_session double precision ,
+                                last_name character varying(50) ,
+                                length character varying(50) ,
+                                level character varying(50) ,
+                                location character varying(500) ,
+                                method character varying(500) ,
+                                page character varying(500) ,
+                                registration double precision ,
+                                session_id double precision ,
+                                song character varying(500) , 
+                                status double precision , 
+                                ts double precision , 
+                                user_agent character varying(500) , 
+                                user_id double precision
+                            );
 """)
 
 staging_songs_table_create = ("""
-                                create table staging_songs(
+                            create table staging_songs(
+                              staging_songs_id  bigint identity(0,1) not null,
                                 num_songs double precision,
-                                artist_id character varying(500),
+                                artist_id character varying(50),
                                 artist_latitude character varying(500),
                                 artist_longitude character varying(500),
                                 artist_location character varying(500),
                                 artist_name character varying(500),
-                                song_id character varying(500),
+                                song_id character varying(50),
                                 title character varying(500),
                                 duration double precision,
-                                year double precision
-                                );
+                                year int
+                            );
 """)
 
 songplay_table_create = ("""
+                        create table songplays(
+                            songplay_id bigint identity(0,1) not null,
+                            start_time timestamp,
+                            user_id bigint, 
+                            level character varying(50), 
+                            song_id character varying(50), 
+                            artist_id character varying(50),  
+                            session_id bigint, 
+                            location character varying(500), 
+                            user_agent character varying(500)
+                         );
 """)
 
 user_table_create = ("""
+                    create table users(
+                        user_id bigint, 
+                        first_name character varying(50) , 
+                        last_name character varying(50) ,  
+                        gender char(1), 
+                        level character varying(50) 
+                     );
 """)
 
 song_table_create = ("""
+                    create table songs(
+                        song_id character varying(50), 
+                        title character varying(50), 
+                        artist_id character varying(50), 
+                        year int, 
+                        duration double precision
+                     );
 """)
 
 artist_table_create = ("""
+                        create table artists(
+                            artist_id character varying(50), 
+                            name character varying(50) , 
+                            location character varying(500), 
+                            latitude character varying(500), 
+                            longitude character varying(500)
+                       );
 """)
 
 time_table_create = ("""
+                    create table time(
+                        start_time timestamp, 
+                        hour int, 
+                        day char(9), 
+                        week smallint, 
+                        month smallint, 
+                        year smallint, 
+                        weekday smallint
+                     )
 """)
 
 # STAGING TABLES
@@ -110,10 +153,10 @@ time_table_insert = ("""
 
 # QUERY LISTS
 
-# create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create, user_table_create, song_table_create, artist_table_create, time_table_create]
-# drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop, user_table_drop, song_table_drop, artist_table_drop, time_table_drop]
-# copy_table_queries = [staging_events_copy, staging_songs_copy]
+create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create, user_table_create, song_table_create, artist_table_create, time_table_create]
+drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop, user_table_drop, song_table_drop, artist_table_drop, time_table_drop]
+copy_table_queries = [staging_events_copy, staging_songs_copy]
 # insert_table_queries = [songplay_table_insert, user_table_insert, song_table_insert, artist_table_insert, time_table_insert]
-create_table_queries = [staging_events_table_create,staging_songs_table_create]
-drop_table_queries = [staging_events_table_drop,staging_songs_table_drop]
-copy_table_queries = [staging_events_copy,staging_songs_copy]
+# create_table_queries = [staging_events_table_create,staging_songs_table_create]
+# drop_table_queries = [staging_events_table_drop,staging_songs_table_drop]
+# copy_table_queries = [staging_events_copy,staging_songs_copy]
