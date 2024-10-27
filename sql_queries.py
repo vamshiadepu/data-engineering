@@ -64,58 +64,58 @@ staging_songs_table_create = ("""
 
 songplay_table_create = ("""
                         create table songplays(
-                            songplay_id bigint identity(0,1) not null,
-                            start_time timestamp,
-                            user_id bigint, 
+                            songplay_id bigint identity(0,1) primay key,
+                            start_time timestamp not null sortkey,
+                            user_id bigint not null distkey, 
                             level character varying(50), 
                             song_id character varying(50), 
                             artist_id character varying(50),  
                             session_id bigint, 
                             location character varying(500), 
                             user_agent character varying(500)
-                         );
+                         ) diststyle key;
 """)
 
 user_table_create = ("""
                     create table users(
-                        user_id bigint, 
+                        user_id bigint primary key sortkey, 
                         first_name character varying(50) , 
                         last_name character varying(50) ,  
                         gender char(1), 
                         level character varying(50) 
-                     );
+                     ) diststyle all;
 """)
 
 song_table_create = ("""
                     create table songs(
-                        song_id character varying(50), 
+                        song_id character varying(50) primay key sortkey, 
                         title character varying(50), 
                         artist_id character varying(50), 
                         year int, 
                         duration double precision
-                     );
+                     ) diststyle key;
 """)
 
 artist_table_create = ("""
                         create table artists(
-                            artist_id character varying(50), 
+                            artist_id character varying(50) primary key sortkey, 
                             name character varying(50) , 
                             location character varying(500), 
                             latitude character varying(500), 
                             longitude character varying(500)
-                       );
+                       )diststyle all;
 """)
 
 time_table_create = ("""
                     create table time(
-                        start_time timestamp, 
+                        start_time timestamp primary key sortkey, 
                         hour int, 
                         day char(9), 
                         week smallint, 
                         month smallint, 
                         year smallint, 
                         weekday smallint
-                     )
+                     ) diststyle key;
 """)
 
 # STAGING TABLES
@@ -137,18 +137,95 @@ staging_songs_copy = ("""
 # FINAL TABLES
 
 songplay_table_insert = ("""
+                            insert into songplays as
+                            (
+                            select 
+                                timestamp 'epoch' + (se.ts/1000) * interval '1 second' start_time 
+                                ,se.user_id    
+                                ,se.level      
+                                ,ss.song_id    
+                                ,ss.artist_id  
+                                ,se.session_id 
+                                ,se.location   
+                                ,se.user_agent 
+                                ,se.artist
+                                ,ss.artist_name
+                                ,se.song
+                                ,se.page
+                                ,ss.duration
+                                ,se.length
+                            from 
+                                staging_songs ss
+                                , staging_events se
+                            where 
+                                ss.title = se.song 
+                                and ss.artist_name = se.artist  
+                            );
 """)
 
 user_table_insert = ("""
+                    insert into users 
+                        select distinct 
+                            se.user_id
+                            ,se.first_name
+                            ,se.last_name
+                            ,se.gender
+                            ,se.level     
+                        from 
+                            staging_events se
+                        where 
+                            se.user_id is not null 
+                        group by 
+                            se.user_id
+                            ,se.first_name
+                            ,se.last_name
+                            ,se.gender   
+                            ,se.level ;
 """)
 
 song_table_insert = ("""
+                    insert into songs
+                        select 
+                            ss.song_id
+                            ,ss.title
+                            ,ss.artist_id
+                            ,ss.year
+                            ,ss.duration   
+                        from 
+                            staging_songs ss;
 """)
 
 artist_table_insert = ("""
+                        insert into artists
+                            select 
+                                ss.artist_id
+                                ,ss.artist_name
+                                ,ss.artist_location
+                                ,ss.artist_latitude
+                                ,ss.artist_longitude    
+                            from 
+                                staging_songs ss
+                            group by   
+                                ss.artist_id
+                                ,ss.artist_name
+                                ,ss.artist_location
+                                ,ss.artist_latitude
+                                ,ss.artist_longitude;
 """)
 
 time_table_insert = ("""
+                    insert into time
+                        with ts_converted AS (SELECT TIMESTAMP 'epoch' + (ts/1000 * INTERVAL '1 second') as ts FROM stage_event)
+                        select distinct
+                            ts,
+                            extract(hour from ts),
+                            extract(day from ts),
+                            extract(week from ts),
+                            extract(month from ts),
+                            extract(year from ts),
+                            extract(weekday from ts)
+                        from
+                            ts_converted;
 """)
 
 # QUERY LISTS

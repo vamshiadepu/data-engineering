@@ -30,7 +30,9 @@ def main():
     print("starting loading staging tables")
     load_staging_tables(cur, conn)
     print("loading staging tables is done")
-    #insert_tables(cur, conn)
+    print("starting insert into tables")
+    insert_tables(cur, conn)
+    print('insert into tables done')
 
     conn.close()
 
