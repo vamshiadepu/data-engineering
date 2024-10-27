@@ -1,7 +1,7 @@
 import configparser
 import psycopg2
 import boto3
-# from sql_queries import copy_table_queries, insert_table_queries
+from sql_queries import copy_table_queries, insert_table_queries
 from sql_queries import copy_table_queries
 from datetime import datetime
 
