@@ -8,12 +8,13 @@ from datetime import datetime
 
 def load_staging_tables(cur, conn):
     for query in copy_table_queries:
-        print('loading stage tables query %s'%query)
+        #print('loading stage tables query %s'%query)
         cur.execute(query)
         conn.commit()
 
 def insert_tables(cur, conn):
     for query in insert_table_queries:
+        #print('insert into tables - query %s'%query)
         cur.execute(query)
         conn.commit()
 
@@ -25,14 +26,12 @@ def main():
     conn = psycopg2.connect("host={} dbname={} user={} password={} port={}".format(*config['CLUSTER'].values()))
     cur = conn.cursor()
     
-    # start_time = datetime.fromtimestamp(1541121934796/1000.0)
-    # print("start time %s"%start_time)
-    print("starting loading staging tables")
+    print("loading staging tables started")
     load_staging_tables(cur, conn)
-    print("loading staging tables is done")
-    print("starting insert into tables")
+    print("loading staging tables completed")
+    print("insert into tables started")
     insert_tables(cur, conn)
-    print('insert into tables done')
+    print('insert into tables completed')
 
     conn.close()
 
