@@ -6,32 +6,30 @@ Sparkify ETL Pipeline
 
 This ETL pipeline extracts Sparkify data from S3, stages them in Redshift, and transforms data into a set of dimensional tables for the analytics team to continue finding insights into what songs Sparkify users are listening to.
 
+As part of this project, following tables are created
+
+Staging tables for loading data from S3:
+staging_songs
+staging_events
+
+Star Schema tables:
+songplays
+songs 
+artists 
+time
+users
+
+
 ### Executing program
 
 * How to run the program
 
     git clone https://github.com/vamshiadepu/data-engineering
-
-* Step-by-step bullets
-```
-code blocks for commands
-```
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+    Run aws_setup.py for creating redshift cluster
+    Run create_tables.py for creating required tables
+    Run etl.py for loading staging tables and star schema tables created
 
 ## Authors
+Vamshi Adepu
 
 
-## Acknowledgments
-
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)

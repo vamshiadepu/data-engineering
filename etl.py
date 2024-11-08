@@ -33,6 +33,25 @@ def main():
     insert_tables(cur, conn)
     print('insert into tables completed')
 
+    print('Running Query to get songs played in November 2018')
+    query = ("""
+                    select distinct ss.title, ss.duration 
+from 
+songplays sp, 
+time tm,
+songs  ss 
+where sp.start_time = tm.start_time
+and sp.song_id = ss.song_id
+and tm.year = '2018'
+and tm.month = 11;
+""")
+    
+    cur.execute(query)
+    result = cur.fetchall()
+    print("Result is:")
+    for x in result:
+        print(x)
+
     conn.close()
 
 
