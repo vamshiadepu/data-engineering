@@ -119,57 +119,51 @@ def main(args):
                             region_name=region_name,
                             aws_access_key_id=KEY,
                             aws_secret_access_key=SECRET)
-    
-    clean_up(iam, redshift)
-    for i in range(seconds):
-        cluster = redshift.describe_clusters(ClusterIdentifier=CLUSTER_IDENTIFIER)['Clusters'][0]
-        print(cluster['ClusterStatus'], end='\r')
-        sleep(1)
 
-    # if args.clean_up is True:
-    #     clean_up(iam, redshift)
-    #     for i in range(seconds):
-    #         cluster = redshift.describe_clusters(ClusterIdentifier=CLUSTER_IDENTIFIER)['Clusters'][0]
-    #         print(cluster['ClusterStatus'], end='\r')
-    #         sleep(1)
-    # else:
-    #     role_arn = create_iam_role(iam)
-    #     create_cluster(role_arn, redshift)
-    #     for i in range(seconds):
-    #         cluster = redshift.describe_clusters(ClusterIdentifier=CLUSTER_IDENTIFIER)['Clusters'][0]
-    #         print(cluster['ClusterStatus'])
-    #         if cluster['ClusterStatus'] == 'available':
-    #             with open('dwh.cfg', 'w') as configfile:
-    #                 DWH_ENDPOINT = cluster['Endpoint']['Address']
-    #                 DWH_ROLE_ARN = cluster['IamRoles'][0]['IamRoleArn']
-    #                 config.set('CLUSTER', 'HOST', DWH_ENDPOINT)
-    #                 config.set('CLUSTER', 'DB_USER', DB_USER)
-    #                 config.set('CLUSTER', 'DB_PORT', PORT)
-    #                 config.set('CLUSTER', 'DB_PASSWORD', DB_PASSWORD)
-    #                 config.set('CLUSTER', 'DB_NAME', DB_NAME)
-    #                 config.set('CLUSTER', 'REGION', str(region_name))
-    #                 config.set('IAM_ROLE', 'ARN', role_arn)
-    #                 config.write(configfile)
-    #             sleep(5)
-    #             try:
-    #                 vpc = ec2.Vpc(id=cluster['VpcId'])
-    #                 defaultSg = list(vpc.security_groups.all())[0]
-    #                 print(defaultSg)
-    #                 defaultSg.authorize_ingress(
-    #                     GroupName=defaultSg.group_name,
-    #                     CidrIp='0.0.0.0/0',
-    #                     IpProtocol='TCP',
-    #                     FromPort=int(PORT),
-    #                     ToPort=int(PORT)
-    #                 )
-    #             except Exception as e:
-    #                 print(e)
-    #             break
-    #         elif cluster['ClusterStatus'] == 'unavailable':
-    #             print('\nCreated cluster but it went down')
-    #         else:
-    #             print('waiting for redshift to come up for %s seconds' % i, end='\r')
-    #         sleep(5)
+    if args.clean_up is True:
+        clean_up(iam, redshift)
+        for i in range(seconds):
+            cluster = redshift.describe_clusters(ClusterIdentifier=CLUSTER_IDENTIFIER)['Clusters'][0]
+            print(cluster['ClusterStatus'], end='\r')
+            sleep(1)
+    else:
+        role_arn = create_iam_role(iam)
+        create_cluster(role_arn, redshift)
+        for i in range(seconds):
+            cluster = redshift.describe_clusters(ClusterIdentifier=CLUSTER_IDENTIFIER)['Clusters'][0]
+            print(cluster['ClusterStatus'])
+            if cluster['ClusterStatus'] == 'available':
+                with open('dwh.cfg', 'w') as configfile:
+                    DWH_ENDPOINT = cluster['Endpoint']['Address']
+                    DWH_ROLE_ARN = cluster['IamRoles'][0]['IamRoleArn']
+                    config.set('CLUSTER', 'HOST', DWH_ENDPOINT)
+                    config.set('CLUSTER', 'DB_USER', DB_USER)
+                    config.set('CLUSTER', 'DB_PORT', PORT)
+                    config.set('CLUSTER', 'DB_PASSWORD', DB_PASSWORD)
+                    config.set('CLUSTER', 'DB_NAME', DB_NAME)
+                    config.set('CLUSTER', 'REGION', str(region_name))
+                    config.set('IAM_ROLE', 'ARN', role_arn)
+                    config.write(configfile)
+                sleep(5)
+                try:
+                    vpc = ec2.Vpc(id=cluster['VpcId'])
+                    defaultSg = list(vpc.security_groups.all())[0]
+                    print(defaultSg)
+                    defaultSg.authorize_ingress(
+                        GroupName=defaultSg.group_name,
+                        CidrIp='0.0.0.0/0',
+                        IpProtocol='TCP',
+                        FromPort=int(PORT),
+                        ToPort=int(PORT)
+                    )
+                except Exception as e:
+                    print(e)
+                break
+            elif cluster['ClusterStatus'] == 'unavailable':
+                print('\nCreated cluster but it went down')
+            else:
+                print('waiting for redshift to come up for %s seconds' % i, end='\r')
+            sleep(5)
 
 
 if __name__ == '__main__':
