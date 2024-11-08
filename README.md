@@ -9,25 +9,23 @@ This ETL pipeline extracts Sparkify data from S3, stages them in Redshift, and t
 As part of this project, following tables are created
 
 Staging tables for loading data from S3:
-staging_songs
-staging_events
+* staging_songs
+* staging_events
 
 Star Schema tables:
-songplays
-songs 
-artists 
-time
-users
+* songplays
+* songs 
+* artists 
+* time
+* users
 
 
 ### Executing program
 
-* How to run the program
-
-    git clone https://github.com/vamshiadepu/data-engineering
-    Run aws_setup.py for creating redshift cluster
-    Run create_tables.py for creating required tables
-    Run etl.py for loading staging tables and star schema tables created
+* git clone https://github.com/vamshiadepu/data-engineering
+* Run aws_setup.py for creating redshift cluster
+* Run create_tables.py for creating required staging and star schema tables
+* Run etl.py for loading staging tables and star schema tables created
 
 ## Authors
 Vamshi Adepu
