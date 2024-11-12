@@ -24,9 +24,9 @@ Star Schema tables:
 
 * git clone https://github.com/vamshiadepu/data-engineering
 * Export key and sercrets
-   * export KEY=insert_key_kere
-   * export SECRET=insert_secret_kere
-* Fill in dwh.cfg DWH section. These will be used to create cluster
+   * export KEY=<your_aws_key>
+   * export SECRET=<your_aws_secret>
+* Fill in dwh.cfg CLUSTER section. 
 * Set up database and amazon redshift
    * Run aws_setup.py for creating redshift cluster  
 * Run create_tables.py for creating required staging and star schema tables
