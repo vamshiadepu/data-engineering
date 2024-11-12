@@ -36,4 +36,6 @@ Star Schema tables:
 ## Authors
 Vamshi Adepu
 
+## References
+* Udacity Data Engineering with AWS Course
 
