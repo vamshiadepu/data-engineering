@@ -23,7 +23,12 @@ Star Schema tables:
 ### Executing program
 
 * git clone https://github.com/vamshiadepu/data-engineering
-* Run aws_setup.py for creating redshift cluster  
+* Export key and sercrets
+   * export KEY=insert_key_kere
+   * export SECRET=insert_secret_kere
+* Fill in dwh.cfg DWH section. These will be used to create cluster
+* Set up database and amazon redshift
+   * Run aws_setup.py for creating redshift cluster  
 * Run create_tables.py for creating required staging and star schema tables
 * Run etl.py for loading staging tables and star schema tables created
 * Run aws_setup.py with parameter --clean_up as True for cleaning up the AWS resources
