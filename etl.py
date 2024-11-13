@@ -7,12 +7,14 @@ from datetime import datetime
 
 
 def load_staging_tables(cur, conn):
+    """Loads staing tables using data stored in AWS S3"""
     for query in copy_table_queries:
         #print('loading stage tables query %s'%query)
         cur.execute(query)
         conn.commit()
 
 def insert_tables(cur, conn):
+    """Inserts data in start schema tables"""
     for query in insert_table_queries:
         #print('insert into tables - query %s'%query)
         cur.execute(query)
