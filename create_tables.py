@@ -4,6 +4,7 @@ from sql_queries import create_table_queries, drop_table_queries
 
 
 def drop_tables(cur, conn):
+    """Drops all the staging and star schema tables if they exist"""
     for query in drop_table_queries:
         #print('drop table query %s'%query)
         cur.execute(query)
@@ -11,6 +12,7 @@ def drop_tables(cur, conn):
 
 
 def create_tables(cur, conn):
+    """Creates the staging and star schema tables"""
     for query in create_table_queries:
         #print('create table query %s'%query)
         cur.execute(query)
